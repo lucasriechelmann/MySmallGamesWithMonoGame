@@ -60,3 +60,4 @@ ScaffoldingReadMe.txt
 # Visual Studio 2019
 .vs/ 
 EOL
+/MarioClone/packages
