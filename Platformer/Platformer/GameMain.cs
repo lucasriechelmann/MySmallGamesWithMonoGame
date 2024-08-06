@@ -5,9 +5,12 @@ using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.ECS;
 using MonoGame.Extended.Input;
+using MonoGame.Extended.Screens;
+using MonoGame.Extended.Screens.Transitions;
 using MonoGame.Extended.Tiled;
 using MonoGame.Extended.Tiled.Renderers;
 using Platformer.Components;
+using Platformer.Screens;
 using Platformer.Systems;
 using System.Collections.Generic;
 
@@ -15,12 +18,15 @@ namespace Platformer;
 
 public class GameMain : GameBase
 {
-    TiledMap _map;
-    TiledMapRenderer _renderer;
+    public enum GameState
+    {
+        MainMenu,
+        Gameplay
+    }
+    Dictionary<GameState, GameScreen> _screens = new();
     OrthographicCamera _camera;
-    World _world;
-    EntityFactory _entityFactory;    
-    public Size WorldSize { get; private set; }
+    public Size WorldSize { get; set; }
+    ScreenManager _screenManager;
     public GameMain() : base(1280, 720)
     {
         
@@ -38,54 +44,47 @@ public class GameMain : GameBase
         builder.RegisterType<CollisionSystem>();
         builder.RegisterType<DebugTileSystem>();
         builder.RegisterType<CameraSystem>();
+        builder.RegisterType<GameplayScreen>();
+        builder.RegisterType<MainMenuScreen>();
     }
     protected override void LoadContent()
     {
-        _world = new WorldBuilder()
-            .AddSystem(Container.Resolve<PlayerSystem>())
-            .AddSystem(Container.Resolve<CollisionSystem>())
-            .AddSystem(Container.Resolve<CameraSystem>())
-            .AddSystem(Container.Resolve<RenderSystem>())
-            //.AddSystem(Container.Resolve<DebugTileSystem>())
-            .Build();
-        Components.Add(_world);
-
-        _map = Content.Load<TiledMap>("Tiled/Map/level1");
-        _renderer = new TiledMapRenderer(GraphicsDevice, _map);
-        WorldSize = new(_map.WidthInPixels, _map.HeightInPixels);
-
-        _entityFactory = new EntityFactory(_world, Content);
-
-        _entityFactory.CreatePlayer(new Vector2(32, 32));
-
-        CreateCollisionBodies();
+        _screenManager = new();
+        Components.Add(_screenManager);  
+        LoadScreen(GameState.MainMenu);
     }
 
     protected override void Update(GameTime gameTime)
     {
         KeyboardExtended.Update();
-
-        _renderer.Update(gameTime);
-
         base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.Black);
-
-        _renderer.Draw(0, _camera.GetViewMatrix());
-
+        GraphicsDevice.Clear(Color.CornflowerBlue);
         base.Draw(gameTime);
     }
-    void CreateCollisionBodies()
+    public void LoadScreen(GameState state)
     {
-        int tileWidth = _map.TileWidth;
-        int tileHeight = _map.TileHeight;
-        var layer = _map.GetLayer<TiledMapTileLayer>("collision");
-        foreach(var tile in layer.Tiles)
+        _screenManager.LoadScreen(GetScreen(state), new FadeTransition(GraphicsDevice, Color.Black));
+    }
+    GameScreen GetScreen(GameState state)
+    {
+        GameScreen gameScreen = _screens.GetValueOrDefault(state);
+
+        if (gameScreen is null)
         {
-            _entityFactory.CreateTile(tile.X, tile.Y, tileWidth, tileHeight);
+            gameScreen = state switch
+            {
+                GameState.MainMenu => Container.Resolve<MainMenuScreen>(),
+                GameState.Gameplay => Container.Resolve<GameplayScreen>(),
+                _ => null
+            };
+
+            _screens.Add(state, gameScreen);
         }
+
+        return gameScreen;
     }
 }

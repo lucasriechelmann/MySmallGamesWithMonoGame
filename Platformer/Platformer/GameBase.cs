@@ -7,7 +7,7 @@ namespace Platformer;
 public abstract class GameBase : Game
 {
     protected GraphicsDeviceManager Graphics { get; }
-    protected IContainer Container { get; private set; }
+    public IContainer Container { get; private set; }
     public int Width { get; private set; }
     public int Height { get; private set; }
     public Viewport Viewport => Graphics.GraphicsDevice.Viewport;
