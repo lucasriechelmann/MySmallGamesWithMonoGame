@@ -6,6 +6,7 @@ using MonoGame.Extended.ECS.Systems;
 using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Input;
 using Platformer.Components;
+using System;
 
 namespace Platformer.Systems;
 
@@ -14,11 +15,10 @@ public class PlayerSystem : EntityProcessingSystem
     OrthographicCamera _camera;
     ComponentMapper<PlayerComponent> _playerMapper;
     ComponentMapper<Sprite> _spriteMapper;
-    ComponentMapper<Transform2> _transformMapper;
     ComponentMapper<BodyComponent> _bodyMapper;
     float _speed = 200;
     public PlayerSystem(OrthographicCamera camera) : 
-        base(Aspect.All(typeof(BodyComponent), typeof(PlayerComponent), typeof(Sprite), typeof(Transform2)))
+        base(Aspect.All(typeof(BodyComponent), typeof(PlayerComponent), typeof(Sprite)))
     {
         _camera = camera;
     }
@@ -26,13 +26,11 @@ public class PlayerSystem : EntityProcessingSystem
     {
         _playerMapper = mapperService.GetMapper<PlayerComponent>();
         _spriteMapper = mapperService.GetMapper<Sprite>();
-        _transformMapper = mapperService.GetMapper<Transform2>();
         _bodyMapper = mapperService.GetMapper<BodyComponent>();
     }
     public override void Process(GameTime gameTime, int entityId)
     {
         PlayerComponent player = _playerMapper.Get(entityId);
-        Transform2 transform = _transformMapper.Get(entityId);
         BodyComponent body = _bodyMapper.Get(entityId);
         //Sprite sprite = _spriteMapper.Get(entityId);
 
@@ -53,5 +51,7 @@ public class PlayerSystem : EntityProcessingSystem
             velocity.X += _speed;
 
         body.Velocity = velocity;
+
+        
     }
 }

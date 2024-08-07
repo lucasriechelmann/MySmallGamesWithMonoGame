@@ -7,6 +7,7 @@ using MonoGame.Extended.ECS.Systems;
 using MonoGame.Extended.Graphics;
 using MonoGame.Extended.Tiled.Renderers;
 using MonoGame.Extended.Tiled;
+using Platformer.Components;
 
 namespace Platformer.Systems;
 public class RenderSystem : EntityDrawSystem
@@ -17,7 +18,7 @@ public class RenderSystem : EntityDrawSystem
     TiledMapRenderer _renderer;
     ComponentMapper<AnimatedSprite> _animatedSpriteMapper;
     ComponentMapper<Sprite> _spriteMapper;
-    ComponentMapper<Transform2> _transformMapper;
+    ComponentMapper<BodyComponent> _bodyMapper;
     public RenderSystem(SpriteBatch spriteBatch, OrthographicCamera camera) : base(Aspect.All())
     {
         _spriteBatch = spriteBatch;
@@ -27,7 +28,7 @@ public class RenderSystem : EntityDrawSystem
     {
         _animatedSpriteMapper = mapperService.GetMapper<AnimatedSprite>();
         _spriteMapper = mapperService.GetMapper<Sprite>();
-        _transformMapper = mapperService.GetMapper<Transform2>();
+        _bodyMapper = mapperService.GetMapper<BodyComponent>();
     }
     public override void Draw(GameTime gameTime)
     {
@@ -38,13 +39,14 @@ public class RenderSystem : EntityDrawSystem
             var sprite = _animatedSpriteMapper.Has(entity)
                 ? _animatedSpriteMapper.Get(entity)
                 : _spriteMapper.Get(entity);
-            var transform = _transformMapper.Get(entity);
+
+            BodyComponent body = _bodyMapper.Get(entity);
 
             if (sprite is AnimatedSprite animatedSprite)
                 animatedSprite.Update(gameTime);
 
-            if(sprite != null && transform != null)
-                _spriteBatch.Draw(sprite, transform);
+            if(sprite is not null && body is not null && body.Transform is not null)
+                _spriteBatch.Draw(sprite, body.Transform);
 
         }
 

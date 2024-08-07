@@ -27,7 +27,6 @@ public class EntityFactory
 
         Entity player = _world.CreateEntity();
         player.Attach(sprite);
-        player.Attach(new Transform2(position, 0, Vector2.One));
         player.Attach(BodyComponent.CreateDynamicBody(position, new(32, 32)));
         player.Attach(new PlayerComponent());
 

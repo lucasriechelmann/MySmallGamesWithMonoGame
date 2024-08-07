@@ -43,7 +43,7 @@ public class GameplayScreen : GameScreenBase
                 .AddSystem(GameMain.Container.Resolve<CollisionSystem>())
                 .AddSystem(GameMain.Container.Resolve<CameraSystem>())
                 .AddSystem(GameMain.Container.Resolve<RenderSystem>())
-                //.AddSystem(Container.Resolve<DebugTileSystem>())
+                .AddSystem(GameMain.Container.Resolve<DebugTileSystem>())
                 .Build();
 
         _map = Content.Load<TiledMap>("Tiled/Map/level1");

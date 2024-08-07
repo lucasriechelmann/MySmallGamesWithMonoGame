@@ -7,7 +7,8 @@ namespace Platformer.Components;
 public class BodyComponent
 {
     public Guid Id { get; set; } = Guid.NewGuid();
-    public BodyType BodyType { get; set; }    
+    public BodyType BodyType { get; set; }
+    public Transform2 Transform => new(Position);
     public float X { get; set; }
     public float Y { get; set; }
     public float Width { get; set; }
