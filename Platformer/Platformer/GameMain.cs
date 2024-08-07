@@ -1,15 +1,10 @@
 ﻿using Autofac;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using MonoGame.Extended.ECS;
 using MonoGame.Extended.Input;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.Tiled.Renderers;
-using Platformer.Components;
 using Platformer.Screens;
 using Platformer.Systems;
 using System.Collections.Generic;
@@ -21,7 +16,8 @@ public class GameMain : GameBase
     public enum GameState
     {
         MainMenu,
-        Gameplay
+        Gameplay,
+        Setting
     }
     Dictionary<GameState, GameScreen> _screens = new();
     OrthographicCamera _camera;
@@ -46,6 +42,7 @@ public class GameMain : GameBase
         builder.RegisterType<CameraSystem>();
         builder.RegisterType<GameplayScreen>();
         builder.RegisterType<MainMenuScreen>();
+        builder.RegisterType<SettingScreen>();  
     }
     protected override void LoadContent()
     {
@@ -79,6 +76,7 @@ public class GameMain : GameBase
             {
                 GameState.MainMenu => Container.Resolve<MainMenuScreen>(),
                 GameState.Gameplay => Container.Resolve<GameplayScreen>(),
+                GameState.Setting => Container.Resolve<SettingScreen>(),
                 _ => null
             };
 

@@ -11,7 +11,7 @@ using static Platformer.GameMain;
 
 namespace Platformer.Screens;
 
-public class GameplayScreen : BaseGameScreen
+public class GameplayScreen : GameScreenBase
 {
     TiledMap _map;
     TiledMapRenderer _renderer;
@@ -19,31 +19,6 @@ public class GameplayScreen : BaseGameScreen
     public GameplayScreen(GameMain game, OrthographicCamera camera) : base(game)
     {
         _camera = camera;
-    }
-
-    public override void LoadContent()
-    {
-        if(_world is null)
-        {
-            _world = new WorldBuilder()
-                .AddSystem(GameMain.Container.Resolve<PlayerSystem>())
-                .AddSystem(GameMain.Container.Resolve<CollisionSystem>())
-                .AddSystem(GameMain.Container.Resolve<CameraSystem>())
-                .AddSystem(GameMain.Container.Resolve<RenderSystem>())
-                //.AddSystem(Container.Resolve<DebugTileSystem>())
-                .Build();
-
-            _map = Content.Load<TiledMap>("Tiled/Map/level1");
-            _renderer = new TiledMapRenderer(GraphicsDevice, _map);
-
-            GameMain.WorldSize = new Size(_map.WidthInPixels, _map.HeightInPixels);
-
-            _entityFactory = new EntityFactory(_world, Content);
-
-            _entityFactory.CreatePlayer(new Vector2(32, 32));
-
-            CreateCollisionBodies();
-        }
     }
     public override void Update(GameTime gameTime)
     {
@@ -60,6 +35,27 @@ public class GameplayScreen : BaseGameScreen
     {
         _renderer.Draw(0, _camera.GetViewMatrix());
         _world.Draw(gameTime);
+    }
+    protected override void Load()
+    {
+        _world = new WorldBuilder()
+                .AddSystem(GameMain.Container.Resolve<PlayerSystem>())
+                .AddSystem(GameMain.Container.Resolve<CollisionSystem>())
+                .AddSystem(GameMain.Container.Resolve<CameraSystem>())
+                .AddSystem(GameMain.Container.Resolve<RenderSystem>())
+                //.AddSystem(Container.Resolve<DebugTileSystem>())
+                .Build();
+
+        _map = Content.Load<TiledMap>("Tiled/Map/level1");
+        _renderer = new TiledMapRenderer(GraphicsDevice, _map);
+
+        GameMain.WorldSize = new Size(_map.WidthInPixels, _map.HeightInPixels);
+
+        _entityFactory = new EntityFactory(_world, Content);
+
+        _entityFactory.CreatePlayer(new Vector2(32, 32));
+
+        CreateCollisionBodies();
     }
     void CreateCollisionBodies()
     {

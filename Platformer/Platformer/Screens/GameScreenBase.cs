@@ -4,12 +4,13 @@ using MonoGame.Extended.Screens;
 
 namespace Platformer.Screens;
 
-public class BaseGameScreen : GameScreen
+public abstract class GameScreenBase : GameScreen
 {
     protected GameMain GameMain => (GameMain)Game;
     protected World _world;
     protected EntityFactory _entityFactory;
-    public BaseGameScreen(GameMain game) : base(game)
+    bool _loaded;
+    public GameScreenBase(GameMain game) : base(game)
     {
         
     }
@@ -22,4 +23,14 @@ public class BaseGameScreen : GameScreen
     {
         
     }
+    public override void LoadContent()
+    {
+        if(_loaded)
+            return;
+
+        _loaded = true;
+
+        Load();
+    }
+    protected abstract void Load();
 }
