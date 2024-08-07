@@ -8,7 +8,6 @@ public abstract class GameScreenBase : GameScreen
 {
     protected GameMain GameMain => (GameMain)Game;
     protected World _world;
-    protected EntityFactory _entityFactory;
     bool _loaded;
     public GameScreenBase(GameMain game) : base(game)
     {

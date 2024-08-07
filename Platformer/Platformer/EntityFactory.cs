@@ -32,9 +32,9 @@ public class EntityFactory
 
         return player;
     }
-    public void CreateTile(int x, int y, int width, int height)
+    public Entity CreateTile(int x, int y, int width, int height)
     {
-        var entity = _world.CreateEntity();
+        Entity entity = _world.CreateEntity();
         entity.Attach(new BodyComponent
         {
             Position = new(x * width, y * height),
@@ -42,5 +42,6 @@ public class EntityFactory
             BodyType = BodyType.Static,
             Velocity = Vector2.Zero
         });
+        return entity;
     }
 }

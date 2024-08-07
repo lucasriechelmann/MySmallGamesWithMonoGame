@@ -8,16 +8,17 @@ using MonoGame.Extended;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
 using static Platformer.GameMain;
+using Platformer.Managers;
+using RenderingLibrary;
 
 namespace Platformer.Screens;
 
 public class GameplayScreen : GameScreenBase
 {
-    TiledMap _map;
-    TiledMapRenderer _renderer;
     OrthographicCamera _camera;
+    LevelManager _levelManager ;
     public GameplayScreen(GameMain game, OrthographicCamera camera) : base(game)
-    {
+    {        
         _camera = camera;
     }
     public override void Update(GameTime gameTime)
@@ -28,13 +29,13 @@ public class GameplayScreen : GameScreenBase
             return;
         }
 
-        _renderer.Update(gameTime);
+        _levelManager?.Update(gameTime);
         _world.Update(gameTime);
     }
     public override void Draw(GameTime gameTime)
     {
-        _renderer.Draw(0, _camera.GetViewMatrix());
-        _world.Draw(gameTime);
+        _levelManager?.Draw(gameTime);
+        _world?.Draw(gameTime);
     }
     protected override void Load()
     {
@@ -43,28 +44,11 @@ public class GameplayScreen : GameScreenBase
                 .AddSystem(GameMain.Container.Resolve<CollisionSystem>())
                 .AddSystem(GameMain.Container.Resolve<CameraSystem>())
                 .AddSystem(GameMain.Container.Resolve<RenderSystem>())
-                .AddSystem(GameMain.Container.Resolve<DebugTileSystem>())
+                //.AddSystem(GameMain.Container.Resolve<DebugTileSystem>())
                 .Build();
 
-        _map = Content.Load<TiledMap>("Tiled/Map/level1");
-        _renderer = new TiledMapRenderer(GraphicsDevice, _map);
-
-        GameMain.WorldSize = new Size(_map.WidthInPixels, _map.HeightInPixels);
-
-        _entityFactory = new EntityFactory(_world, Content);
-
-        _entityFactory.CreatePlayer(new Vector2(32, 32));
-
-        CreateCollisionBodies();
-    }
-    void CreateCollisionBodies()
-    {
-        int tileWidth = _map.TileWidth;
-        int tileHeight = _map.TileHeight;
-        var layer = _map.GetLayer<TiledMapTileLayer>("collision");
-        foreach (var tile in layer.Tiles)
-        {
-            _entityFactory.CreateTile(tile.X, tile.Y, tileWidth, tileHeight);
-        }
-    }
+        _levelManager = new LevelManager(GameMain, _camera, _world);
+        _levelManager.AddLevel("level1", "Tiled/Map/level1", 0);
+        _levelManager.ChangeLevel("level1");        
+    }    
 }
