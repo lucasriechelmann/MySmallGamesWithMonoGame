@@ -1,15 +1,13 @@
-﻿using Microsoft.Xna.Framework;
-using MonoGame.Extended.Tiled.Renderers;
-using MonoGame.Extended.Tiled;
-using MonoGame.Extended.ECS;
-using Platformer.Systems;
-using Autofac;
-using MonoGame.Extended;
+﻿using Autofac;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using MonoGame.Extended.ECS;
 using MonoGame.Extended.Input;
-using static Platformer.GameMain;
+using Platformer.Enums;
 using Platformer.Managers;
-using RenderingLibrary;
+using Platformer.Systems;
+using static Platformer.GameMain;
 
 namespace Platformer.Screens;
 
@@ -41,9 +39,11 @@ public class GameplayScreen : GameScreenBase
     {
         _world = new WorldBuilder()
                 .AddSystem(GameMain.Container.Resolve<PlayerSystem>())
+                .AddSystem(GameMain.Container.Resolve<EnemySystem>())
                 .AddSystem(GameMain.Container.Resolve<CollisionSystem>())
                 .AddSystem(GameMain.Container.Resolve<CameraSystem>())
-                .AddSystem(GameMain.Container.Resolve<RenderSystem>())
+                .AddSystem(GameMain.Container.Resolve<PlayerRenderSystem>())
+                .AddSystem(GameMain.Container.Resolve<EnemyRenderSystem>())
                 //.AddSystem(GameMain.Container.Resolve<DebugTileSystem>())
                 .Build();
 

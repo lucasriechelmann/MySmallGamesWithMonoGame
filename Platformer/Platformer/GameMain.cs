@@ -5,20 +5,15 @@ using MonoGame.Extended;
 using MonoGame.Extended.Input;
 using MonoGame.Extended.Screens;
 using MonoGame.Extended.Screens.Transitions;
+using Platformer.Enums;
 using Platformer.Screens;
 using Platformer.Systems;
 using System.Collections.Generic;
 
 namespace Platformer;
-
 public class GameMain : GameBase
 {
-    public enum GameState
-    {
-        MainMenu,
-        Gameplay,
-        Setting
-    }
+    
     Dictionary<GameState, GameScreen> _screens = new();
     OrthographicCamera _camera;
     public Size WorldSize { get; set; }
@@ -36,7 +31,9 @@ public class GameMain : GameBase
         builder.RegisterInstance(GraphicsDevice);
         builder.RegisterInstance(Content);
         builder.RegisterType<PlayerSystem>();
-        builder.RegisterType<RenderSystem>();
+        builder.RegisterType<PlayerRenderSystem>();
+        builder.RegisterType<EnemySystem>();
+        builder.RegisterType<EnemyRenderSystem>();
         builder.RegisterType<CollisionSystem>();
         builder.RegisterType<DebugTileSystem>();
         builder.RegisterType<CameraSystem>();

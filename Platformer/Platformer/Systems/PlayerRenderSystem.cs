@@ -1,25 +1,20 @@
-﻿using Autofac;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 using MonoGame.Extended.ECS;
 using MonoGame.Extended.ECS.Systems;
 using MonoGame.Extended.Graphics;
-using MonoGame.Extended.Tiled.Renderers;
-using MonoGame.Extended.Tiled;
 using Platformer.Components;
 
 namespace Platformer.Systems;
-public class RenderSystem : EntityDrawSystem
+public class PlayerRenderSystem : EntityDrawSystem
 {    
     readonly SpriteBatch _spriteBatch;
-    readonly OrthographicCamera _camera;
-    TiledMap _map;
-    TiledMapRenderer _renderer;
+    readonly OrthographicCamera _camera;    
     ComponentMapper<AnimatedSprite> _animatedSpriteMapper;
     ComponentMapper<Sprite> _spriteMapper;
     ComponentMapper<BodyComponent> _bodyMapper;
-    public RenderSystem(SpriteBatch spriteBatch, OrthographicCamera camera) : base(Aspect.All())
+    public PlayerRenderSystem(SpriteBatch spriteBatch, OrthographicCamera camera) : base(Aspect.All(typeof(PlayerComponent), typeof(BodyComponent), typeof(Sprite)))
     {
         _spriteBatch = spriteBatch;
         _camera = camera;        

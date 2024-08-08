@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended.Input;
+using Platformer.Enums;
 using static Platformer.GameMain;
 
 namespace Platformer.Screens;

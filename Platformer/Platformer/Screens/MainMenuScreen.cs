@@ -5,6 +5,7 @@ using MonoGame.Extended.Screens;
 using MonoGameGum.Forms;
 using MonoGameGum.Forms.Controls;
 using MonoGameGum.GueDeriving;
+using Platformer.Enums;
 using RenderingLibrary;
 using static Platformer.GameMain;
 
